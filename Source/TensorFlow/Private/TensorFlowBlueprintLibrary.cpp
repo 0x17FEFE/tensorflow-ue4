@@ -168,6 +168,35 @@ UTexture2D* UTensorFlowBlueprintLibrary::Conv_RenderTargetTextureToTexture2D(UTe
 	return Pointer;
 }
 
+UTexture2D* UTensorFlowBlueprintLibrary::Conv_RenderTargetTextureToColorTexture2D(UTextureRenderTarget2D* PassedTexture)
+{
+	int TextureLength = PassedTexture->SizeX * PassedTexture->SizeY;
+	UTexture2D* Pointer = UTexture2D::CreateTransient(PassedTexture->SizeX, PassedTexture->SizeY, PF_R8G8B8A8);
+
+	TArray<FColor> SurfData;
+	FRenderTarget *RenderTarget = PassedTexture->GameThread_GetRenderTargetResource();
+	RenderTarget->ReadPixels(SurfData);
+
+	uint8* MipData = static_cast<uint8*>(Pointer->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
+
+	//Copy Data
+	for (int i = 0; i < TextureLength; i++)
+	{
+		int MipPointer = i * 4;
+		const FColor& Color = SurfData[i];
+		MipData[MipPointer] = Color.R;
+		MipData[MipPointer + 1] = Color.G;
+		MipData[MipPointer + 2] = Color.B;
+		MipData[MipPointer + 3] = Color.A;	//Alpha
+	}
+
+	//Unlock and Return data
+	Pointer->PlatformData->Mips[0].BulkData.Unlock();
+	Pointer->UpdateResource();
+
+	return Pointer;
+}
+
 TArray<float> UTensorFlowBlueprintLibrary::Conv_ByteToFloatArray(const TArray<uint8>& InByteArray, float Scale)
 {
 	TArray<float> FloatArray;

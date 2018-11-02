@@ -37,9 +37,13 @@ public:
 
 	/** Convert render to target texture2d to a UTexture2D */
 	UFUNCTION(BlueprintPure, meta = (DisplayName = "ToTexture2D (Render Target 2D)", BlueprintAutocast), Category = "Utilities|TensorFlow")
-	static UTexture2D* Conv_RenderTargetTextureToTexture2D(UTextureRenderTarget2D* InTexture);
+		static UTexture2D* Conv_RenderTargetTextureToTexture2D(UTextureRenderTarget2D* InTexture);
 
-	/** Convert a byte array into a float array, normalized by the passed in scale */
+	/** Convert render to target texture2d to a colored UTexture2D */
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "ToColorTexture2D (Render Target 2D)", BlueprintAutocast), Category = "Utilities|TensorFlow")
+		static UTexture2D* Conv_RenderTargetTextureToColorTexture2D(UTextureRenderTarget2D* InTexture);
+
+		/** Convert a byte array into a float array, normalized by the passed in scale */
 	UFUNCTION(BlueprintPure, meta = (DisplayName = "ToFloatArray (bytes)", BlueprintAutocast), Category = "Utilities|TensorFlow")
 	static TArray<float> Conv_ByteToFloatArray(const TArray<uint8>& InByteArray, float Scale = 1.f);
 };
